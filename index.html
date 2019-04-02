@@ -1,16 +1,18 @@
 <style>
+    body {
+        text-align: center;
+    }
+    
     canvas {
         border: solid 1px;
-        width: 1050px;
-        height: 48;
     }
 
     span {
         display: block;
     }
 
-    body {
-        text-align: center;
+    input {
+        width: 30ch;
     }
 </style>
 
@@ -28,12 +30,12 @@
 
 <p>
     <span>Lê-se:</span>
-    <canvas id="canvas-leitura"></canvas>
+    <canvas id="canvas-leitura" width="1050" height="48"></canvas>
 </p>
 
 <p>
     <span>Escreve-se:</span>
-    <canvas id="canvas-escrita"></canvas>
+    <canvas id="canvas-escrita" width="1050" height="48"></canvas>
 </p>
 
 <script>

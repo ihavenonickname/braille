@@ -41,7 +41,7 @@
 </p>
 
 <script>
-    const lettersToBraile = {
+    const latinToBraille = {
         ' ': {
             leftColumn: [0, 0, 0],
             rightColumn: [0, 0, 0]
@@ -152,6 +152,8 @@
         },
     };
 
+    const knownCharacters = new Set(latinToBraille.keys());
+    
     function drawCircle(x, y, isFilled, ctx) {
         ctx.beginPath();
         ctx.arc(x, y, 5, 0, 2 * Math.PI);
@@ -179,7 +181,7 @@
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         for (let i = 0; i < text.length; i++) {
-            const { leftColumn, rightColumn } = lettersToBraile[text[i]];
+            const { leftColumn, rightColumn } = latinToBraille[text[i]];
 
             drawBraile(i, leftColumn, rightColumn, ctx);
         }
@@ -194,7 +196,7 @@
         text = text.split('').reverse();
 
         for (let i = 0; i < text.length; i++) {
-            const { leftColumn, rightColumn } = lettersToBraile[text[i]];
+            const { leftColumn, rightColumn } = latinToBraille[text[i]];
 
             drawBraile(i, rightColumn, leftColumn, ctx);
         }
@@ -202,13 +204,17 @@
 
     document.getElementById('texto').addEventListener('input', function () {
         const text = document.getElementById('texto').value.toUpperCase();
-
-        if (/^[A-Z\s]+$/.test(text)) {
-            drawTextAsReading(text);
-            drawTextAsWriting(text);
-        } else {
-            drawTextAsReading('');
-            drawTextAsWriting('');
+        
+        for (const character of text) {
+            if (!knownCharacters.has(character)) {
+                drawTextAsReading('');
+                drawTextAsWriting('');
+                
+                return;
+            }
         }
+
+        drawTextAsReading(text);
+        drawTextAsWriting(text);
     });
 </script>

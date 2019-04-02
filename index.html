@@ -152,7 +152,7 @@
         },
     };
 
-    const knownCharacters = new Set(latinToBraille.keys());
+    const knownCharacters = new Set(Object.keys(latinToBraille));
     
     function drawCircle(x, y, isFilled, ctx) {
         ctx.beginPath();
@@ -165,7 +165,7 @@
         }
     }
 
-    function drawBraile(position, leftColumn, rightColumn, ctx) {
+    function drawBraille(position, leftColumn, rightColumn, ctx) {
         const x = 10 + 35 * position;
 
         for (let i = 0; i < 3; i++) {
@@ -174,7 +174,7 @@
         }
     }
 
-    function drawTextAsReading(text) {
+    function drawTextAsBrailleReading(text) {
         const canvas = document.getElementById('canvas-leitura');
         const ctx = canvas.getContext('2d');
 
@@ -183,11 +183,11 @@
         for (let i = 0; i < text.length; i++) {
             const { leftColumn, rightColumn } = latinToBraille[text[i]];
 
-            drawBraile(i, leftColumn, rightColumn, ctx);
+            drawBraille(i, leftColumn, rightColumn, ctx);
         }
     }
 
-    function drawTextAsWriting(text) {
+    function drawTextAsBrailleWriting(text) {
         const canvas = document.getElementById('canvas-escrita');
         const ctx = canvas.getContext('2d');
 
@@ -198,7 +198,7 @@
         for (let i = 0; i < text.length; i++) {
             const { leftColumn, rightColumn } = latinToBraille[text[i]];
 
-            drawBraile(i, rightColumn, leftColumn, ctx);
+            drawBraille(i, rightColumn, leftColumn, ctx);
         }
     }
 
@@ -207,14 +207,14 @@
         
         for (const character of text) {
             if (!knownCharacters.has(character)) {
-                drawTextAsReading('');
-                drawTextAsWriting('');
+                drawTextAsBrailleReading('');
+                drawTextAsBrailleWriting('');
                 
                 return;
             }
         }
 
-        drawTextAsReading(text);
-        drawTextAsWriting(text);
+        drawTextAsBrailleReading(text);
+        drawTextAsBrailleWriting(text);
     });
 </script>

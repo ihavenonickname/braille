@@ -1,0 +1,207 @@
+<style>
+canvas {
+  border: solid 1px;
+}
+
+span {
+  display: block;
+}
+
+body {
+  text-align: center;
+}
+</style>
+
+<title>
+  Texto latino para braille  
+</title>
+<h1>
+  Texto latino para braille
+</h1>
+
+<p>
+  <input id="texto" type="text" maxlength="10" placeholder="Somente letras e espaços">
+</p>
+
+<p>
+  <span>Lê-se:</span>
+  <canvas id="canvas-leitura" width="410" height="48"></canvas>
+</p>
+
+<p>
+  <span>Escreve-se:</span>
+  <canvas id="canvas-escrita" width="410" height="48"></canvas>
+</p>
+
+<script>
+const lettersToBraile = {
+	' ': {
+  	leftColumn : [0, 0, 0],
+    rightColumn: [0, 0, 0]
+  },
+	'A': {
+  	leftColumn : [1, 0, 0],
+    rightColumn: [0, 0, 0]
+  },
+  'B': {
+  	leftColumn : [1, 1, 0],
+    rightColumn: [0, 0, 0]
+  },
+  'C': {
+  	leftColumn : [1, 0, 0],
+    rightColumn: [1, 0, 0]
+  },
+  'D': {
+  	leftColumn : [1, 0, 0],
+    rightColumn: [1, 1, 0]
+  },
+  'E': {
+  	leftColumn : [1, 0, 0],
+    rightColumn: [0, 1, 0]
+  },
+  'F': {
+  	leftColumn : [1, 1, 0],
+    rightColumn: [1, 0, 0]
+  },
+  'G': {
+  	leftColumn : [1, 1, 0],
+    rightColumn: [1, 1, 0]
+  },
+  'H': {
+  	leftColumn : [1, 1, 0],
+    rightColumn: [0, 1, 0]
+  },
+  'I': {
+  	leftColumn : [0, 1, 0],
+    rightColumn: [1, 0, 0]
+  },
+  'J': {
+  	leftColumn : [0, 1, 0],
+    rightColumn: [1, 1, 0]
+  },
+  'K': {
+  	leftColumn : [1, 0, 1],
+    rightColumn: [0, 0, 0]
+  },
+  'L': {
+  	leftColumn : [1, 1, 1],
+    rightColumn: [0, 0, 0]
+  },
+  'M': {
+  	leftColumn : [1, 0, 1],
+    rightColumn: [1, 0, 0]
+  },
+  'N': {
+  	leftColumn : [1, 0, 1],
+    rightColumn: [1, 1, 0]
+  },
+  'O': {
+  	leftColumn : [1, 0, 1],
+    rightColumn: [0, 1, 0]
+  },
+  'P': {
+  	leftColumn : [1, 1, 1],
+    rightColumn: [1, 0, 0]
+  },
+  'Q': {
+  	leftColumn : [1, 1, 1],
+    rightColumn: [1, 1, 0]
+  },
+  'R': {
+  	leftColumn : [1, 1, 1],
+    rightColumn: [0, 1, 0]
+  },
+  'S': {
+  	leftColumn : [0, 1, 1],
+    rightColumn: [1, 0, 0]
+  },
+  'T': {
+  	leftColumn : [0, 1, 1],
+    rightColumn: [1, 1, 0]
+  },
+  'U': {
+  	leftColumn : [1, 0, 1],
+    rightColumn: [0, 0, 1]
+  },
+  'V': {
+  	leftColumn : [1, 1, 1],
+    rightColumn: [0, 0, 1]
+  },
+  'W': {
+  	leftColumn : [0, 1, 0],
+    rightColumn: [1, 1, 1]
+  },
+  'X': {
+  	leftColumn : [1, 0, 1],
+    rightColumn: [1, 0, 1]
+  },
+  'Y': {
+  	leftColumn : [1, 0, 1],
+    rightColumn: [1, 1, 1]
+  },
+  'Z': {
+  	leftColumn : [1, 0, 1],
+    rightColumn: [0, 1, 1]
+  },
+};
+
+function drawCircle(x, y, isFilled, ctx) {
+	ctx.beginPath();
+  ctx.arc(x, y, 5, 0, 2 * Math.PI);
+  
+  if (isFilled) {
+  	ctx.fill();  
+  } else {
+  	ctx.stroke();
+  }
+}
+
+function drawBraile(position, leftColumn, rightColumn, ctx) {
+	const x = 10 + 35 * position;
+	
+  for (let i = 0; i < 3; i++) {
+    drawCircle(x, 12 * (i + 1), leftColumn[i], ctx);    
+    drawCircle(x + 12, 12 * (i + 1), rightColumn[i], ctx);
+  }
+}
+
+function drawTextAsReading(text) {
+  const canvas = document.getElementById('canvas-leitura');
+  const ctx = canvas.getContext('2d');
+  
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	for (let i = 0; i < text.length; i++) {
+    const { leftColumn, rightColumn } = lettersToBraile[text[i]];
+
+    drawBraile(i, leftColumn, rightColumn, ctx);
+  }
+}
+
+function drawTextAsWriting(text) {
+  const canvas = document.getElementById('canvas-escrita');
+  const ctx = canvas.getContext('2d');
+  
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+	text = text.split('').reverse();
+  
+	for (let i = 0; i < text.length; i++) {
+    const { leftColumn, rightColumn } = lettersToBraile[text[i]];
+
+    drawBraile(i, rightColumn, leftColumn, ctx);
+  }
+}
+
+document.getElementById('texto').addEventListener('input', function() {
+	const text = document.getElementById('texto').value;
+  
+  if (/^[a-zA-Z\s]+$/.test(text)) {
+  	drawTextAsReading(text.toUpperCase());
+    drawTextAsWriting(text.toUpperCase());
+  } else {
+  	drawTextAsReading('');
+    drawTextAsWriting('');
+  }
+});
+</script>

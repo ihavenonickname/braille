@@ -1,6 +1,8 @@
 <style>
     canvas {
         border: solid 1px;
+        width: 1050px;
+        height: 48;
     }
 
     span {
@@ -21,17 +23,17 @@
 </h1>
 
 <p>
-    <input id="texto" type="text" maxlength="10" placeholder="Somente letras e espaços">
+    <input id="texto" type="text" maxlength="30" placeholder="Somente letras e espaços">
 </p>
 
 <p>
     <span>Lê-se:</span>
-    <canvas id="canvas-leitura" width="410" height="48"></canvas>
+    <canvas id="canvas-leitura"></canvas>
 </p>
 
 <p>
     <span>Escreve-se:</span>
-    <canvas id="canvas-escrita" width="410" height="48"></canvas>
+    <canvas id="canvas-escrita"></canvas>
 </p>
 
 <script>

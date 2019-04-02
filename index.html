@@ -195,11 +195,11 @@
     }
 
     document.getElementById('texto').addEventListener('input', function () {
-        const text = document.getElementById('texto').value;
+        const text = document.getElementById('texto').value.toUpperCase();
 
-        if (/^[a-zA-Z\s]+$/.test(text)) {
-            drawTextAsReading(text.toUpperCase());
-            drawTextAsWriting(text.toUpperCase());
+        if (/^[A-Z\s]+$/.test(text)) {
+            drawTextAsReading(text);
+            drawTextAsWriting(text);
         } else {
             drawTextAsReading('');
             drawTextAsWriting('');

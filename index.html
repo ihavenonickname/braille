@@ -32,12 +32,12 @@
 
 <p>
     <span>You read as:</span>
-    <canvas id="canvas-leitura" width="1050" height="48"></canvas>
+    <canvas id="canvas-reading" width="1050" height="48"></canvas>
 </p>
 
 <p>
     <span>You write as:</span>
-    <canvas id="canvas-escrita" width="1050" height="48"></canvas>
+    <canvas id="canvas-writing" width="1050" height="48"></canvas>
 </p>
 
 <script>
@@ -175,7 +175,7 @@
     }
 
     function drawTextAsBrailleReading(text) {
-        const canvas = document.getElementById('canvas-leitura');
+        const canvas = document.getElementById('canvas-reading');
         const ctx = canvas.getContext('2d');
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -188,7 +188,7 @@
     }
 
     function drawTextAsBrailleWriting(text) {
-        const canvas = document.getElementById('canvas-escrita');
+        const canvas = document.getElementById('canvas-writing');
         const ctx = canvas.getContext('2d');
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -204,7 +204,7 @@
     document.getElementById('input-text').addEventListener('input', function () {
         const text = [...document.getElementById('input-text').value.toUpperCase()];
         
-        if (text.every(c => knownCharacters.has(character))) {
+        if (text.every(c => knownCharacters.has(c))) {
             drawTextAsBrailleReading(text);
             drawTextAsBrailleWriting(text);
         } else {

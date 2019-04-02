@@ -3,20 +3,29 @@
 <style>
     body {
         text-align: center;
+        font-family: monospace;
     }
-    
+
+    input {
+        font-family: monospace;
+    }
+
     canvas {
-        border: solid 1px;
+        height: 48px;
+        width: 98vw;
+        display: block;
     }
 
     span {
         display: block;
     }
 
-    input {
-        width: 30ch;
+    .area-drawing {
+        margin-top: 50px;
     }
 </style>
+
+<meta charset="UTF-8">
 
 <title>
     Latin characters to braille
@@ -27,15 +36,15 @@
 </h1>
 
 <p>
-    <input id="input-text" type="text" maxlength="30" placeholder="Only letters and spaces">
+    <input id="input-text" type="text" maxlength="1" placeholder="Only letters and spaces">
 </p>
 
-<p>
+<p class="area-drawing">
     <span>You read as:</span>
     <canvas id="canvas-reading" width="1050" height="48"></canvas>
 </p>
 
-<p>
+<p class="area-drawing">
     <span>You write as:</span>
     <canvas id="canvas-writing" width="1050" height="48"></canvas>
 </p>
@@ -153,7 +162,15 @@
     };
 
     const knownCharacters = new Set(Object.keys(latinToBraille));
-    
+
+    const inputText = document.getElementById('input-text');
+
+    const canvasWriting = document.getElementById('canvas-writing');
+    const canvasReading = document.getElementById('canvas-reading');
+
+    const ctxWriting = canvasWriting.getContext('2d');
+    const ctxReading = canvasReading.getContext('2d');
+
     function drawCircle(x, y, isFilled, ctx) {
         ctx.beginPath();
         ctx.arc(x, y, 5, 0, 2 * Math.PI);
@@ -175,35 +192,29 @@
     }
 
     function drawTextAsBrailleReading(text) {
-        const canvas = document.getElementById('canvas-reading');
-        const ctx = canvas.getContext('2d');
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctxReading.clearRect(0, 0, canvasReading.width, canvasReading.height);
 
         for (let i = 0; i < text.length; i++) {
             const { leftColumn, rightColumn } = latinToBraille[text[i]];
 
-            drawBraille(i, leftColumn, rightColumn, ctx);
+            drawBraille(i, leftColumn, rightColumn, ctxReading);
         }
     }
 
     function drawTextAsBrailleWriting(text) {
-        const canvas = document.getElementById('canvas-writing');
-        const ctx = canvas.getContext('2d');
-
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctxWriting.clearRect(0, 0, canvasWriting.width, canvasWriting.height);
 
         for (let i = 0; i < text.length; i++) {
             const character = text[text.length - i - 1];
             const { leftColumn, rightColumn } = latinToBraille[character];
 
-            drawBraille(i, rightColumn, leftColumn, ctx);
+            drawBraille(i, rightColumn, leftColumn, ctxWriting);
         }
     }
 
     document.getElementById('input-text').addEventListener('input', function () {
         const text = [...document.getElementById('input-text').value.toUpperCase()];
-        
+
         if (text.every(c => knownCharacters.has(c))) {
             drawTextAsBrailleReading(text);
             drawTextAsBrailleWriting(text);
@@ -211,5 +222,16 @@
             drawTextAsBrailleReading('');
             drawTextAsBrailleWriting('');
         }
+    });
+
+    window.addEventListener('load', function () {
+        canvasReading.height = canvasReading.scrollHeight;
+        canvasReading.width = canvasReading.scrollWidth;
+
+        canvasWriting.height = canvasWriting.scrollHeight;
+        canvasWriting.width = canvasWriting.scrollWidth;
+
+        inputText.maxLength = Math.floor(canvasReading.scrollWidth / 35);
+        inputText.style.width = `${inputText.maxLength}ch`;
     });
 </script>

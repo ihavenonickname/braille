@@ -19,24 +19,24 @@
 </style>
 
 <title>
-    Texto latino para braille
+    Latin characters to braille
 </title>
 
 <h1>
-    Texto latino para braille
+    Latin characters to braille
 </h1>
 
 <p>
-    <input id="texto" type="text" maxlength="30" placeholder="Somente letras e espaços">
+    <input id="input-text" type="text" maxlength="30" placeholder="Only letters and spaces">
 </p>
 
 <p>
-    <span>Lê-se:</span>
+    <span>You read as:</span>
     <canvas id="canvas-leitura" width="1050" height="48"></canvas>
 </p>
 
 <p>
-    <span>Escreve-se:</span>
+    <span>You write as:</span>
     <canvas id="canvas-escrita" width="1050" height="48"></canvas>
 </p>
 
@@ -193,28 +193,23 @@
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        text = text.split('').reverse();
-
         for (let i = 0; i < text.length; i++) {
-            const { leftColumn, rightColumn } = latinToBraille[text[i]];
+            const character = text[text.length - i - 1];
+            const { leftColumn, rightColumn } = latinToBraille[character];
 
             drawBraille(i, rightColumn, leftColumn, ctx);
         }
     }
 
-    document.getElementById('texto').addEventListener('input', function () {
-        const text = document.getElementById('texto').value.toUpperCase();
+    document.getElementById('input-text').addEventListener('input', function () {
+        const text = [...document.getElementById('input-text').value.toUpperCase()];
         
-        for (const character of text) {
-            if (!knownCharacters.has(character)) {
-                drawTextAsBrailleReading('');
-                drawTextAsBrailleWriting('');
-                
-                return;
-            }
+        if (text.every(c => knownCharacters.has(character))) {
+            drawTextAsBrailleReading(text);
+            drawTextAsBrailleWriting(text);
+        } else {
+            drawTextAsBrailleReading('');
+            drawTextAsBrailleWriting('');
         }
-
-        drawTextAsBrailleReading(text);
-        drawTextAsBrailleWriting(text);
     });
 </script>
